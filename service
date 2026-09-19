@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+PWD=$(pwd)
+DIR="${PWD##*/}"
+sudo tee /etc/systemd/system/$DIR-bot.service >/dev/null <<EOF
+[Unit]
+Description=service runner for $DIR-bot
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=$PWD
+ExecStart=($which dart) $PWD/bin/$DIR.dart
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+read -p "Start now? [y/N] " start
+if [[ "$start" =~ ^[Yy]$ ]]; then
+    sudo systemctl start $DIR-bot
+fi
+read -p "Enable on boot? [y/N] " enable
+if [[ "$enable" =~ ^[Yy]$ ]]; then
+    sudo systemctl enable $DIR-bot
+fi

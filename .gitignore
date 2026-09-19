@@ -1,0 +1,6 @@
+# Dart / Pub
+.dart_tool/
+pubspec.lock
+
+# env
+.env

@@ -1,0 +1,10 @@
+name: ph
+description: A telegram helper
+version: 1.0.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  penv: ^2.0.0
+  ptgb: ^3.0.0

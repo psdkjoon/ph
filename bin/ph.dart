@@ -14,27 +14,29 @@ Future<void> main() async {
   await for (Update update in bot.poll()) {
     final chatId = update.chatId;
     final text = update.text;
-    if (text?.toLowerCase() == 'meet' && allowedChats.contains(chatId)) {
+    if (chatId == null || text == null) continue;
+
+    if (text.toLowerCase() == 'meet' && allowedChats.contains(chatId)) {
       bot.sendMessage(
-        chatId: chatId!,
+        chatId: chatId,
         text: await createGoogleMeet(),
         replyToMessageId: update.messageId,
       );
     } else if (RegExp(
-      r'^(?=.*\d.*(?:[-+*/%^<>]|//))\s*[-+]?\s*\(*\s*[-+]?\s*\d+\.?\d*\s*\)*(?:\s*(?:[-+*/%^<>]|//)\s*[-+]?\s*\(*\s*[-+]?\s*\d+\.?\d*\s*\)*)*$',
-    ).hasMatch(update.text!)) {
+      r'^(?=.*\d.*(?:[-+*/%^<>]|//))\s*[-+]?\s*\(*\s*[-+]?\s*\d+\.?\d*\s*\)*(?:\s*(?:[-+*/%^<>]|//)\s*[-+]?\s*\(*\s*[-+]?\s*\)*)*$',
+    ).hasMatch(text)) {
       final equation = RegExp(r'\d+\.?\d*|//|[-+*/%^()]')
-          .allMatches(update.text!)
+          .allMatches(text)
           .map((m) => m[0]!)
           .toList();
       bot.sendMessage(
-        chatId: chatId!,
+        chatId: chatId,
         text: solve(equation)
             .toStringAsFixed(10)
             .replaceFirst(RegExp(r'\.?0+$'), ''),
         replyToMessageId: update.messageId,
       );
-    } else if (text != null && text.startsWith('/help')) {
+    } else if (text.startsWith('/help')) {
       if (update.entities != null &&
           update.entities?[0]['type'] == 'bot_command') {
         bot.sendMessage(

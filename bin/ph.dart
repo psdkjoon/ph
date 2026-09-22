@@ -12,11 +12,11 @@ Future<void> main() async {
     ],
   );
   await for (Update update in bot.poll()) {
-    final chatId = update.chatId!;
-    final text = update.text!;
-    if (text.toLowerCase() == 'meet' && allowedChats.contains(chatId)) {
+    final chatId = update.chatId;
+    final text = update.text;
+    if (text?.toLowerCase() == 'meet' && allowedChats.contains(chatId)) {
       bot.sendMessage(
-        chatId: chatId,
+        chatId: chatId!,
         text: await createGoogleMeet(),
         replyToMessageId: update.messageId,
       );
@@ -28,13 +28,13 @@ Future<void> main() async {
           .map((m) => m[0]!)
           .toList();
       bot.sendMessage(
-        chatId: chatId,
+        chatId: chatId!,
         text: solve(equation)
             .toStringAsFixed(10)
             .replaceFirst(RegExp(r'\.?0+$'), ''),
         replyToMessageId: update.messageId,
       );
-    } else if (text.startsWith('/help')) {
+    } else if (text != null && text.startsWith('/help')) {
       if (update.entities != null &&
           update.entities?[0]['type'] == 'bot_command') {
         bot.sendMessage(
